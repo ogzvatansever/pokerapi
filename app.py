@@ -10,15 +10,38 @@ class Card:
     def __init__(self, invalue) :
         self.suit = invalue[0]
         self.rank = invalue[1]
-        self.value = cardranking.get(invalue[1])
+        self.value = cardranking.get(self.rank)
         self.unicode = carddeck.get(invalue)
-        self.name = "Ace of Spades"
+        self.name = rankname.get(self.rank)+" of "+suitname.get(self.suit)
 
     def __str__(self) :
         return str(self.unicode)
     
     def __repr__(self) :
         return repr((self.suit, self.rank, self.value, self.unicode))
+
+rankname = {
+    "1":"Ace",
+    "2":"Two",
+    "3":"Three",
+    "4":"Four",
+    "5":"Five",
+    "6":"Six",
+    "7":"Seven",
+    "8":"Eight",
+    "9":"Nine",
+    "A":"Ten",
+    "B":"Jack",
+    "D":"Queen",
+    "E":"King",
+}
+
+suitname = {
+    "A":"Spades",
+    "B":"Hearts",
+    "C":"Diamonds",
+    "D":"Clubs"
+}
 
 cardranking = {
     "1":14,
@@ -104,7 +127,46 @@ kartlar = [
     Card('AA'),
     Card('AB'),
     Card('AD'),
-    Card('AE')
+    Card('AE'),
+    Card('B1'),
+    Card('B2'),
+    Card('B3'),
+    Card('B4'),
+    Card('B5'),
+    Card('B6'),
+    Card('B7'),
+    Card('B8'),
+    Card('B9'),
+    Card('BA'),
+    Card('BB'),
+    Card('BD'),
+    Card('BE'),
+    Card('C1'),
+    Card('C2'),
+    Card('C3'),
+    Card('C4'),
+    Card('C5'),
+    Card('C6'),
+    Card('C7'),
+    Card('C8'),
+    Card('C9'),
+    Card('CA'),
+    Card('CB'),
+    Card('CD'),
+    Card('CE'),
+    Card('D1'),
+    Card('D2'),
+    Card('D3'),
+    Card('D4'),
+    Card('D5'),
+    Card('D6'),
+    Card('D7'),
+    Card('D8'),
+    Card('D9'),
+    Card('DA'),
+    Card('DB'),
+    Card('DD'),
+    Card('DE')
 ]
 
 def KeytoValue(inlist) :
