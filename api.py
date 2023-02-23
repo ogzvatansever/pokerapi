@@ -5,13 +5,9 @@ import random
 import json
 import sqlite3
 
-con = sqlite3.connect('test.db')
-cursor = con.cursor()
-
-cursor.execute('CREATE TABLE IF NOT EXISTS Games (board TEXT)')
-
-con.commit()
-con.close()
+# Current SQL table query
+# CREATE TABLE Games (id INTEGER PRIMARY KEY AUTOINCREMENT, board TEXT, hand TEXT)
+# need to add deck as well
 
 app = Flask(__name__)
 CORS(app)
@@ -47,7 +43,25 @@ kartlar = [Card('A1'),Card('A2'),Card('A3'),Card('A4'),Card('A5'),Card('A6'),Car
 # Butona basıldığında api a fetch isteği atıcak o yeni deste çekicek
 # Ekran şuanlık sadece en son çekilen kartları gösteriyor 
 
-class PokerAPI(Resource) :
+#class PokerAPI(Resource) :
+#    def get(self) :
+#        cards = kartlar.copy()
+#        random.shuffle(cards)
+#        board = []
+#        hand = []
+#        for i in range(5) :
+#            board.append(cards.pop())
+#        for i in range(2) :
+#            hand.append(cards.pop())
+#        #cursor.execute('INSERT INTO Games (BOARD) VALUES (?)',(json.dumps([obj.__dict__ for obj in board]),))
+#        with sqlite3.connect('test.db') as con :
+#            cur = con.cursor()
+#            cur.execute('SELECT BOARD FROM Games ORDER BY ID DESC LIMIT 1')
+#            output = cur.fetchone()
+#        #return json.dumps([obj.__dict__ for obj in board])
+#        return output
+
+class DealCards(Resource) :
     def get(self) :
         cards = kartlar.copy()
         random.shuffle(cards)
@@ -57,17 +71,21 @@ class PokerAPI(Resource) :
             board.append(cards.pop())
         for i in range(2) :
             hand.append(cards.pop())
-        con = sqlite3.connect('test.db')
-        cursor = con.cursor()
-        #cursor.execute('INSERT INTO Games (BOARD) VALUES (?)',(json.dumps([obj.__dict__ for obj in board]),))
-        cursor.execute('SELECT BOARD FROM Games ORDER BY ID DESC LIMIT 1')
-        output = cursor.fetchone()
-        con.commit()
-        con.close()
-        #return json.dumps([obj.__dict__ for obj in board])
-        return output
+        with sqlite3.connect('test.db') as con :
+            cur = con.cursor()
+            cur.execute('INSERT INTO Games (BOARD,HAND) VALUES (?,?)',(json.dumps([obj.__dict__ for obj in board]),json.dumps([obj.__dict__ for obj in hand])))
 
-api.add_resource(PokerAPI, '/poker/')
+class GetLast(Resource) :
+    def get(self, option) :
+        with sqlite3.connect('test.db') as con :
+            cur = con.cursor()
+            print(option)
+            cur.execute('SELECT '+option+' FROM Games ORDER BY ID DESC LIMIT 1')
+            output = cur.fetchone()
+            return output
+
+api.add_resource(GetLast, '/poker/getlast/<string:option>')
+api.add_resource(DealCards, '/poker/dealcards')
 
 if __name__ == '__main__':
     app.run(debug=True)

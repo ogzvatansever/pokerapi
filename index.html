@@ -11,16 +11,30 @@
             }
 
             p{  
+                margin: 1vh;
                 color: white;
-                font-size: 40vh;
+                font-size: 15vw;
+            }
+            
+            .mainview{
+                margin: 1vh;
+                text-align: center; 
+            }
+
+            .hand p{
+                font-size: 7vw;
             }
 
         </style>
     </head>
     <body>
-        <div>
-            <p id="test"></p>
-            <button>test</button>
+        <div class="mainview">
+            <p id="board">There is no cards on the database or couldn't connect to the database</p>
+            <button onclick="dealCards()">Deal New Cards</button>
+            <div class="hand">
+                <p id="player">Player</p>
+                <p id="hand"></p>
+            </div>
         </div>
     </body>
 </html>
