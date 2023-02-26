@@ -4,10 +4,17 @@ from flask_cors import CORS
 import random
 import json
 import sqlite3
+import logging
+
+#logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
 
 # Current SQL table query
 # CREATE TABLE Games (id INTEGER PRIMARY KEY AUTOINCREMENT, board TEXT, hand TEXT)
 # need to add deck as well
+
+with sqlite3.connect("test.db") as con :
+    cur = con.cursor()
+    cur.execute("CREATE TABLE IF NOT EXISTS Games (id INTEGER PRIMARY KEY AUTOINCREMENT, board TEXT, hand TEXT)")
 
 app = Flask(__name__)
 CORS(app)
@@ -79,7 +86,6 @@ class GetLast(Resource) :
     def get(self, option) :
         with sqlite3.connect('test.db') as con :
             cur = con.cursor()
-            print(option)
             cur.execute('SELECT '+option+' FROM Games ORDER BY ID DESC LIMIT 1')
             output = cur.fetchone()
             return output
