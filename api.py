@@ -140,9 +140,11 @@ def BestHand(inputarr) :
             triple_in = str(i) + " Three of a Kind"
             if triple_in not in triple :
                 triple.append(triple_in)
-    pairs.sort(reverse=True)
-    print(pairs)
-    print(triple)
+
+    if len(pairs) > 1 :
+        print("Two Pair")
+        
+    print("Pairs: ",pairs)
 
 BestHand(RankHand())
 HighCard(RankHand())
