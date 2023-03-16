@@ -90,6 +90,63 @@ class GetLast(Resource) :
             output = cur.fetchone()
             return output
 
+def RankHand() :
+    #elimizi alicaz
+    #community kartlari alicaz
+    #7 li karttan en guclu eli bulucaz
+    #bunlara bir deger vericez
+    with sqlite3.connect('test.db') as con :
+            cur = con.cursor()
+            cur.execute('SELECT hand FROM Games ORDER BY ID DESC LIMIT 1')
+            curhand = cur.fetchone()
+            cur.execute('SELECT board FROM Games ORDER BY ID DESC LIMIT 1')
+            curboard = cur.fetchone()
+            
+    return json.loads(singletupletostr(curhand)) + json.loads(singletupletostr(curboard))
+
+def singletupletostr(inputvar) :
+    for i in inputvar :
+        return i
+
+def HighCard(inputarr) :
+    values = []
+    for i in inputarr :
+        values.append(i["value"])
+    values.sort(reverse=True)
+    print(values)
+
+def BestHand(inputarr) :
+    # Ace high straight and flush
+    # any straight and flush
+    # four of a kind
+    # three of a kind and pair
+    # flush
+    # any straight
+    # three of a kind
+    # two pair
+    # pair
+    # high card
+    values = []
+    pairs = []
+    triple = []
+    for i in inputarr :
+        values.append(i["value"])
+    for i in values :
+        if values.count(i) == 2 :
+            pairs_in = str(i) + " Pair"
+            if pairs_in not in pairs :
+                pairs.append(pairs_in)
+        elif values.count(i) == 3 :
+            triple_in = str(i) + " Three of a Kind"
+            if triple_in not in triple :
+                triple.append(triple_in)
+    pairs.sort(reverse=True)
+    print(pairs)
+    print(triple)
+
+BestHand(RankHand())
+HighCard(RankHand())
+
 api.add_resource(GetLast, '/poker/getlast/<string:option>')
 api.add_resource(DealCards, '/poker/dealcards')
 
