@@ -149,6 +149,17 @@ def BestHand(inputarr) :
 BestHand(RankHand())
 HighCard(RankHand())
 
+for i in RankHand() :
+    print(i)
+
+def toCards(inputArray) :
+    outputArray = []
+    for i in inputArray :
+        outputArray.append(Card(str(i["suit"]+i["rank"])))
+    return outputArray
+
+print(toCards(RankHand()))
+
 api.add_resource(GetLast, '/poker/getlast/<string:option>')
 api.add_resource(DealCards, '/poker/dealcards')
 
