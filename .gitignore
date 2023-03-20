@@ -1,0 +1,5 @@
+# Untracked files
+test.py
+test.db
+example.log
+.gitignore
