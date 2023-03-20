@@ -27,6 +27,7 @@ class Card:
         self.value = cardranking.get(self.rank)
         self.unicode = carddeck.get(invalue)
         self.name = rankname.get(self.rank)+" of "+suitname.get(self.suit)
+        self.rankname = rankname.get(self.rank)
 
     def __str__(self) :
         return str(self.unicode)
@@ -81,6 +82,7 @@ class DealCards(Resource) :
         with sqlite3.connect('test.db') as con :
             cur = con.cursor()
             cur.execute('INSERT INTO Games (BOARD,HAND) VALUES (?,?)',(json.dumps([obj.__dict__ for obj in board]),json.dumps([obj.__dict__ for obj in hand])))
+        print(RankHand(toCards(getBoard())))
 
 class GetLast(Resource) :
     def get(self, option) :
@@ -88,13 +90,10 @@ class GetLast(Resource) :
             cur = con.cursor()
             cur.execute('SELECT '+option+' FROM Games ORDER BY ID DESC LIMIT 1')
             output = cur.fetchone()
+            print(RankHand(toCards(getBoard())))
             return output
 
-def RankHand() :
-    #elimizi alicaz
-    #community kartlari alicaz
-    #7 li karttan en guclu eli bulucaz
-    #bunlara bir deger vericez
+def getBoard() :
     with sqlite3.connect('test.db') as con :
             cur = con.cursor()
             cur.execute('SELECT hand FROM Games ORDER BY ID DESC LIMIT 1')
@@ -108,14 +107,7 @@ def singletupletostr(inputvar) :
     for i in inputvar :
         return i
 
-def HighCard(inputarr) :
-    values = []
-    for i in inputarr :
-        values.append(i["value"])
-    values.sort(reverse=True)
-    print(values)
-
-def BestHand(inputarr) :
+def RankHand(inputarr) :
     # Ace high straight and flush
     # any straight and flush
     # four of a kind
@@ -126,31 +118,51 @@ def BestHand(inputarr) :
     # two pair
     # pair
     # high card
-    values = []
+    tempvalues = []
+    tempsuits = []
     pairs = []
-    triple = []
+    best5 = []
+    threeofakind = []
+    fourofakind = []
+    inputarr.sort(key=lambda x: x.value,reverse=True)
     for i in inputarr :
-        values.append(i["value"])
-    for i in values :
-        if values.count(i) == 2 :
-            pairs_in = str(i) + " Pair"
-            if pairs_in not in pairs :
-                pairs.append(pairs_in)
-        elif values.count(i) == 3 :
-            triple_in = str(i) + " Three of a Kind"
-            if triple_in not in triple :
-                triple.append(triple_in)
+        tempvalues.append(i.value)
+        if i.suit not in tempsuits :
+            tempsuits.append(i.suit)
 
-    if len(pairs) > 1 :
-        print("Two Pair")
+
+    for i in inputarr :
+        if tempvalues.count(i.value) == 4 :
+            print("Four of a kind")
+            fourofakind.append(i.rankname)
+        elif tempvalues.count(i.value) == 3 :
+            if i not in threeofakind :
+                threeofakind.append(i)
+        elif tempvalues.count(i.value) == 2 :
+            if i not in pairs :
+                pairs.append(i)
+
+        if tempsuits.count(i.suit) >= 5 :
+            print("Flush")
+    
+    if len(pairs) >= 5 :
+        return "test"
+    elif len(threeofakind) >= 1 and len(pairs) >= 2 :
+        return "Full house"
+    elif "flush" :
+        return
+    elif "straight" :
+        return
+    elif len(threeofakind) >= 1 :
+        return "Three of a kind"
+    elif len(pairs) >= 2 :
+        return "Two Pair"
+    elif len(pairs) == 1 :
+        return pairs[0].rankname,"Pair"
+    else :
+        return "highcard"
         
-    print("Pairs: ",pairs)
 
-BestHand(RankHand())
-HighCard(RankHand())
-
-for i in RankHand() :
-    print(i)
 
 def toCards(inputArray) :
     outputArray = []
@@ -158,7 +170,7 @@ def toCards(inputArray) :
         outputArray.append(Card(str(i["suit"]+i["rank"])))
     return outputArray
 
-print(toCards(RankHand()))
+
 
 api.add_resource(GetLast, '/poker/getlast/<string:option>')
 api.add_resource(DealCards, '/poker/dealcards')
