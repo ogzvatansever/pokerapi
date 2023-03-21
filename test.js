@@ -1,6 +1,7 @@
 $( document ).ready(function() {
     getData('board');
-    getData('hand');    
+    getData('hand');
+    getRanking();
 });
 
 function getData (option) {
@@ -27,5 +28,14 @@ function dealCards() {
     .then(() => {
         getData('board');
         getData('hand');
+        getRanking();
     });
+}
+
+function getRanking( option ) {
+  fetch('http://127.0.0.1:5000/poker/rankhand')
+  .then((response) => response.json())
+  .then((data) => {
+    document.getElementById('player').innerHTML = data;
+  })
 }

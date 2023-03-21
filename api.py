@@ -82,7 +82,6 @@ class DealCards(Resource) :
         with sqlite3.connect('test.db') as con :
             cur = con.cursor()
             cur.execute('INSERT INTO Games (BOARD,HAND) VALUES (?,?)',(json.dumps([obj.__dict__ for obj in board]),json.dumps([obj.__dict__ for obj in hand])))
-        print(RankHand(toCards(getBoard())))
 
 class GetLast(Resource) :
     def get(self, option) :
@@ -90,7 +89,6 @@ class GetLast(Resource) :
             cur = con.cursor()
             cur.execute('SELECT '+option+' FROM Games ORDER BY ID DESC LIMIT 1')
             output = cur.fetchone()
-            print(RankHand(toCards(getBoard())))
             return output
 
 def getBoard() :
@@ -124,6 +122,9 @@ def RankHand(inputarr) :
     best5 = []
     threeofakind = []
     fourofakind = []
+    temppairs = []
+    tempthree = []
+    tempfour = []
     inputarr.sort(key=lambda x: x.value,reverse=True)
     for i in inputarr :
         tempvalues.append(i.value)
@@ -136,10 +137,12 @@ def RankHand(inputarr) :
             print("Four of a kind")
             fourofakind.append(i.rankname)
         elif tempvalues.count(i.value) == 3 :
-            if i not in threeofakind :
+            if i.value not in tempthree :
+                tempthree.append(i.value)
                 threeofakind.append(i)
         elif tempvalues.count(i.value) == 2 :
-            if i not in pairs :
+            if i.value not in temppairs :
+                temppairs.append(i.value)
                 pairs.append(i)
 
         if tempsuits.count(i.suit) >= 5 :
@@ -149,18 +152,18 @@ def RankHand(inputarr) :
         return "test"
     elif len(threeofakind) >= 1 and len(pairs) >= 2 :
         return "Full house"
-    elif "flush" :
-        return
-    elif "straight" :
-        return
+    elif True == False :
+        return "Flush"
+    elif True == False :
+        return "Straight"
     elif len(threeofakind) >= 1 :
         return "Three of a kind"
     elif len(pairs) >= 2 :
-        return "Two Pair"
+        return "Two Pair "+pairs[0].rankname+" "+pairs[1].rankname
     elif len(pairs) == 1 :
-        return pairs[0].rankname,"Pair"
+        return pairs[0].rankname+" Pair"
     else :
-        return "highcard"
+        return "Highcard"
         
 
 
@@ -171,9 +174,14 @@ def toCards(inputArray) :
     return outputArray
 
 
+class RankHandTest(Resource) :
+    def get(self) :
+        return RankHand(toCards(getBoard()))
+
 
 api.add_resource(GetLast, '/poker/getlast/<string:option>')
 api.add_resource(DealCards, '/poker/dealcards')
+api.add_resource(RankHandTest, '/poker/rankhand')
 
 if __name__ == '__main__':
     app.run(debug=True)
