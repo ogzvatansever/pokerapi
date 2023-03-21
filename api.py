@@ -125,11 +125,14 @@ def RankHand(inputarr) :
     temppairs = []
     tempthree = []
     tempfour = []
+    flush = []
     inputarr.sort(key=lambda x: x.value,reverse=True)
     for i in inputarr :
         tempvalues.append(i.value)
-        if i.suit not in tempsuits :
-            tempsuits.append(i.suit)
+        tempsuits.append(i.suit)
+        if tempsuits.count(i.suit) >= 5 :
+            if not flush :
+                flush.append(i.suit)
 
 
     for i in inputarr :
@@ -145,15 +148,14 @@ def RankHand(inputarr) :
                 temppairs.append(i.value)
                 pairs.append(i)
 
-        if tempsuits.count(i.suit) >= 5 :
-            print("Flush")
+        
     
     if len(pairs) >= 5 :
         return "test"
     elif len(threeofakind) >= 1 and len(pairs) >= 2 :
         return "Full house"
-    elif True == False :
-        return "Flush"
+    elif flush :
+        return suitname.get(flush[0])+" Flush"
     elif True == False :
         return "Straight"
     elif len(threeofakind) >= 1 :
