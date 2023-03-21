@@ -137,7 +137,6 @@ def RankHand(inputarr) :
 
     for i in inputarr :
         if tempvalues.count(i.value) == 4 :
-            print("Four of a kind")
             fourofakind.append(i.rankname)
         elif tempvalues.count(i.value) == 3 :
             if i.value not in tempthree :
@@ -150,8 +149,8 @@ def RankHand(inputarr) :
 
         
     
-    if len(pairs) >= 5 :
-        return "test"
+    if fourofakind :
+        return fourofakind[0]+"Four of a kind"
     elif len(threeofakind) >= 1 and len(pairs) >= 2 :
         return "Full house"
     elif flush :
