@@ -147,8 +147,15 @@ def RankHand(inputarr) :
                 temppairs.append(i.value)
                 pairs.append(i)
 
-        
-    
+    testlist = []
+    testhistory = []
+    for x in tempvalues :
+        for y in tempvalues :
+            if x == y :
+                continue
+            if x-y == 1 :
+                testlist.append(x)
+
     if fourofakind :
         return fourofakind[0]+"Four of a kind"
     elif len(threeofakind) >= 1 and len(pairs) >= 2 :
