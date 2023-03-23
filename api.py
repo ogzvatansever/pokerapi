@@ -41,7 +41,8 @@ class Card:
             "Name":self.name
         })
 
-rankname = {"1":"Ace","2":"Two","3":"Three","4":"Four","5":"Five","6":"Six","7":"Seven","8":"Eight","9":"Nine","A":"Ten","B":"Jack","D":"Queen","E":"King",}
+rankname = {"1":"Ace","2":"Two","3":"Three","4":"Four","5":"Five","6":"Six","7":"Seven","8":"Eight","9":"Nine","A":"Ten","B":"Jack","D":"Queen","E":"King"}
+valuetorank = {"14":"Ace","2":"Two","3":"Three","4":"Four","5":"Five","6":"Six","7":"Seven","8":"Eight","9":"Nine","10":"Ten","11":"Jack","12":"Queen","13":"King"}
 suitname = {"A":"Spades","B":"Hearts","C":"Diamonds","D":"Clubs"}
 cardranking = {"1":14,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,"A":10,"B":11,"D":12,"E":13}
 carddeck = {"A1":"🂡","A2":"🂢","A3":"🂣","A4":"🂤","A5":"🂥","A6":"🂦","A7":"🂧","A8":"🂨","A9":"🂩","AA":"🂪","AB":"🂫","AD":"🂭","AE":"🂮","B1":"🂱","B2":"🂲","B3":"🂳","B4":"🂴","B5":"🂵","B6":"🂶","B7":"🂷","B8":"🂸","B9":"🂹","BA":"🂺","BB":"🂻","BD":"🂽","BE":"🂾","C1":"🃁","C2":"🃂","C3":"🃃","C4":"🃄","C5":"🃅","C6":"🃆","C7":"🃇","C8":"🃈","C9":"🃉","CA":"🃊","CB":"🃋","CD":"🃍","CE":"🃎","D1":"🃑","D2":"🃒","D3":"🃓","D4":"🃔","D5":"🃕","D6":"🃖","D7":"🃗","D8":"🃘","D9":"🃙","DA":"🃚","DB":"🃛","DD":"🃝","DE":"🃞"}
@@ -126,6 +127,8 @@ def RankHand(inputarr) :
     tempthree = []
     tempfour = []
     flush = []
+    straight = []
+    straight5h = False
     inputarr.sort(key=lambda x: x.value,reverse=True)
     for i in inputarr :
         tempvalues.append(i.value)
@@ -147,14 +150,18 @@ def RankHand(inputarr) :
                 temppairs.append(i.value)
                 pairs.append(i)
 
-    testlist = []
-    testhistory = []
     for x in tempvalues :
         for y in tempvalues :
             if x == y :
                 continue
             if x-y == 1 :
-                testlist.append(x)
+                straight.append(x)
+            if x==14 and y==5 :
+                straight.append(x)
+                straight5h = True
+
+    print(tempvalues)
+    print(straight)
 
     if fourofakind :
         return fourofakind[0]+"Four of a kind"
@@ -162,8 +169,11 @@ def RankHand(inputarr) :
         return "Full house"
     elif flush :
         return suitname.get(flush[0])+" Flush"
-    elif True == False :
-        return "Straight"
+    elif len(straight) >= 5 :
+        if straight5h != True :
+            return valuetorank.get(str(straight[0]))+" High Straight"
+        else :
+            return valuetorank.get(str(straight5h[0]))+" High Straight"
     elif len(threeofakind) >= 1 :
         return "Three of a kind"
     elif len(pairs) >= 2 :
