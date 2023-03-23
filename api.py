@@ -152,20 +152,23 @@ def RankHand(inputarr) :
 
     for x in tempvalues :
         for y in tempvalues :
+            print(x,y)
             if x == y :
                 continue
             if x-y == 1 :
-                straight.append(x)
+                if x not in straight :
+                    straight.append(x)
+                if y not in straight :
+                    straight.append(y)
             if x==14 and y==5 :
                 straight.append(x)
                 straight5h = True
 
     print(tempvalues)
     print(straight)
-
     if fourofakind :
         return fourofakind[0]+"Four of a kind"
-    elif len(threeofakind) >= 1 and len(pairs) >= 2 :
+    elif len(threeofakind) >= 1 and len(pairs) >= 1 :
         return "Full house"
     elif flush :
         return suitname.get(flush[0])+" Flush"
